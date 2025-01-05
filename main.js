@@ -122,6 +122,7 @@ function init() {
     window.addEventListener('resize', onWindowResize);
 
     window.addEventListener("mousemove",onMouseMove);
+    window.addEventListener("touchmove",onMouseMove);
     window.addEventListener('click', onClick);
     // Start Animation Loop
     animate();

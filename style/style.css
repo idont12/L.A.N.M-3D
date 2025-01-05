@@ -342,4 +342,9 @@ span.smallText {
     right: 3px;
     transform: translate(0px, 0px);
     }
+
+    .popup{
+        max-width: auto;
+        width: 90%;
+    }
 }
