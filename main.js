@@ -1,6 +1,6 @@
 // Import Three.js
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js';
-import { InteractionManager } from 'three.interactive';
+// import { InteractionManager } from 'three.interactive';
 
 let scene, camera, renderer, controls, interactionManager, objectOnScreen, skySphere, allStages = [], accessibileButtons = [];
 
@@ -25,7 +25,7 @@ function init() {
 
     // Interaction Manager
     allStages = [];
-    interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
+    // interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
     objectOnScreen = [];
     accessibileButtons = [];
 
@@ -98,7 +98,7 @@ class stage {
 
     clearCerentStange() {
         objectOnScreen.forEach(element => {
-            interactionManager.remove(element);
+            // interactionManager.remove(element);
             element.removeFromParent();
         });
         objectOnScreen = [];
@@ -151,7 +151,7 @@ class interactedObject {
         shape.position.set(position.x, position.y, position.z);
         shape.rotation.set(rotation.x, rotation.y, rotation.z);
         // shape.scale.set(scale);
-        interactionManager.add(shape); // Add to Interaction Manager
+        // interactionManager.add(shape); // Add to Interaction Manager
         objectOnScreen.push(shape);
         return shape;
     }
@@ -747,7 +747,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Update Controls and Interaction Manager
-    interactionManager.update();
+    // interactionManager.update();
 
     renderer.render(scene, camera);
 }
