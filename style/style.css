@@ -1,0 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+:root {
+    --mainColor: #231E70;
+    --lightColor: white;
+    --lightColorDarker: rgb(229, 229, 229);
+    --darkColor: black;
+    --darkColorBright: rgb(52, 52, 52);
+
+    --horizonalPadding: 0PX 20PX;
+}
+
+body {
+    margin: 0px;
+    font-family: "Rubik", serif;
+}
+
+button,a,*{
+    font-family: "Rubik", serif;
+}
+
+button,
+a {
+    cursor: pointer;
+}
+
+/* button svg {
+    width: 100%;
+    height: 100%;
+    rotate: 25deg;
+    fill: white;
+} */
+
+button:hover,
+.screen button:hover,
+button:focus-visible,
+.screen button:focus-visible {
+    background: var(--lightColor);
+    color: var(--mainColor);
+}
+
+button:hover svg,
+.screen button:hover svg {
+    fill: var(--mainColor);
+}
+
+/*AccabilityButton*/
+#accessibileButtonsCon {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+}
+
+/*Containers*/
+/*-keep ratio-*/
+.ratio-9_16 {
+    height: 0px;
+    padding-bottom: 56%;
+    position: relative;
+}
+
+.ratio-9_16>*:first-child {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+
+/*popup*/
+.popup {
+    /*Propeties*/
+    visibility: hidden;
+    position: fixed;
+    top: -80vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /*Design*/
+    padding: 10px;
+    max-width: 600px;
+    width: 50%;
+    background: var(--mainColor);
+    border-radius: 8px;
+    color: var(--lightColor);
+    outline: solid var(--lightColor) 2px;
+
+    transition: all 300ms;
+}
+
+.popup.show {
+    top: 50%;
+    visibility: visible;
+}
+
+.popup iframe {
+    border-radius: 6px;
+}
+
+.popup .closeBut {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 1000px;
+    border: none;
+    height: 1.9em;
+    width: 1.9em;
+    display: flex;
+    box-shadow: none;
+    color: var(--mainColor);
+    font-weight: 600;
+
+    justify-content: center;
+    align-items: center;
+    background: var(--lightColor);
+
+    transition: width 200ms, height 200ms, background 250ms;
+    
+}
+
+.popup .closeBut:hover,
+.popup .closeBut:focus-visible {
+    width: 2.2em;
+    height: 2.2em;
+    background-color: var(--lightColorDarker);
+}
+
+/*sideBar*/
+#sideBanner {
+    position: fixed;
+    background: var(--mainColor);
+    height: 100vh;
+    height: 100svh;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    border-right: var(--lightColor) solid 4px;
+
+    color: var(--lightColor);
+    font-weight: 700;
+    font-size: 1.2rem;
+    left: -100%;
+
+    padding: var(--horizonalPadding);
+    transition: all 450ms ease-in-out;
+    visibility: hidden;
+}
+
+#sideBanner.show{
+    left: 0px;
+    visibility: visible;
+}
+
+#sideBanner .close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 100%;
+    transform: translate(-50%, 0%);
+    height: 30px;
+    width: 30px;
+}
+
+#sideBanner svg{
+    width: 55%;
+    height: 55%;
+    rotate: 0deg;
+    fill: white;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+#sideBanner .videoAction svg{
+    transform: translate(-41%, -50%);
+}
+
+#sideBanner .close svg{
+    width: 90%;
+    height: 90%;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-55%, -50%);
+}
+
+#sideBanner .close:hover {
+    transform: scale(1.1) translate(-50%, 0%);
+}
+
+#sideBanner>div {
+    position: relative;
+    width: fit-content;
+    margin: 0px auto;
+}
+
+#sideBanner .titleSection {
+    font-size: 1.2em;
+}
+
+#sideBanner .titleSection * {
+    display: block;
+}
+
+#sideBanner .titleSection>div:first-child {
+    width: fit-content;
+    margin: 0px auto;
+}
+
+#sideBanner .titleSection .artName {
+    padding-left: 0.5em;
+}
+
+#sideBanner .titleSection .artDate {
+    text-align: center;
+    font-size: 0.7em;
+}
+
+#sideBanner a,
+#sideBanner button {
+    height: 2em;
+    width: 2em;
+    border-radius: 100%;
+    background-color: var(--lightColor);
+    display: inline-block;
+    font-size: 1em;
+    border: none;
+    margin-right: 3px;
+    position: relative;
+    transition: transform 200ms, background-color 200ms;
+}
+
+#sideBanner a:hover,
+#sideBanner button:hover,
+#sideBanner a:focus-visible,
+#sideBanner button:focus-visible {
+    transform: scale(1.1);
+    background-color: var(--lightColorDarker);
+}
+
+
+img.smallPic,
+img.bigPic {
+    border-radius: 100%;
+    outline: 3px solid var(--lightColor);
+}
+
+#sideBanner img.smallPic {
+    width: 80px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-20%, -20%);
+}
+
+#sideBanner img.bigPic {
+    width: 190px;
+}
+
+span.smallText {
+    font-weight: 400;
+    font-size: 0.65em;
+}
+
+
+
+.artistInfo {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.artistInfo>div {
+    /* background-color: var(--backColorDarker); */
+    /* border-radius: 5px; */
+    padding: 5px 10px;
+    flex-grow: 1;
+}
+
+.artistInfo>div:nth-child(2) {
+    flex-grow: 5;
+}
+
+.artistInfo>div span:first-child {
+    font-size: 0.7em;
+}
+
+/*main screen*/
+.screen {
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--mainColor);
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: var(--horizonalPadding);
+}
+
+.screen h1 {
+    font-size: 5em;
+    margin: 0;
+    text-align: center;
+    line-height: 1;
+    color: white;
+}
+
+.screen h1 span {
+    display: block;
+    font-size: 0.45em;
+}
+
+.screen button {
+    border-radius: 10000px;
+    border: white solid 2px;
+    background: none;
+    color: var(--lightColor);
+    padding: 8px 15px;
+}
+
+
+@media only screen and (max-width: 550px) {
+    .popup {
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    #sideBanner{
+        width: calc(100vw - 40px);
+    }
+    #sideBanner .close{
+        left: auto;
+    right: 3px;
+    transform: translate(0px, 0px);
+    }
+}
