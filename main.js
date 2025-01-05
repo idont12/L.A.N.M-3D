@@ -122,7 +122,6 @@ function init() {
     window.addEventListener('resize', onWindowResize);
 
     window.addEventListener("mousemove",onMouseMove);
-    window.addEventListener("touchmove",onMouseMove);
     window.addEventListener('click', onClick);
     // Start Animation Loop
     animate();
@@ -856,6 +855,8 @@ document.addEventListener('mouseup', () => {
     isDragging = false;
 });
 
+let lastTouchPosition = null;
+
 document.addEventListener('mousemove', (event) => {
     if (!isDragging) return;
 
@@ -864,6 +865,40 @@ document.addEventListener('mousemove', (event) => {
         y: event.movementY,
     };
 
+    pointerLookAround(deltaMove);
+});
+
+document.addEventListener('touchstart', (event) => {
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        lastTouchPosition = { x: touch.clientX, y: touch.clientY };
+        isDragging = true;
+    }
+});
+
+document.addEventListener('touchmove', (event) => {
+    if (!isDragging || event.touches.length === 0) return;
+
+    const touch = event.touches[0];
+    const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
+
+    // Calculate delta movement
+    const deltaMove = {
+        x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
+        y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
+    };
+
+    lastTouchPosition = currentTouchPosition;
+
+    pointerLookAround(deltaMove);
+});
+
+document.addEventListener('touchend', () => {
+    isDragging = false;
+    lastTouchPosition = null;
+});
+
+function pointerLookAround(deltaMove) {
     const rotationSpeed = 0.002; // Adjust sensitivity
     const quaternionX = new THREE.Quaternion();
     const quaternionY = new THREE.Quaternion();
@@ -873,7 +908,8 @@ document.addEventListener('mousemove', (event) => {
 
     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
-});
+}
+
 
 
 function lookAt(targetObject) {
