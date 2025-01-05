@@ -2,7 +2,83 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js';
 // import { InteractionManager } from 'three.interactive';
 
-let scene, camera, renderer, controls, interactionManager, objectOnScreen, skySphere, allStages = [], accessibileButtons = [];
+
+let scene, camera, renderer, controls, interactionManager, objectOnScreen, skySphere, allStages = [], accessibileButtons = [],interactiveObjects=[];
+
+const mouse  = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+
+
+// Mouse move event handler
+function onMouseMove(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(interactiveObjects);
+
+    // Reset all objects that are not currently intersected
+    interactiveObjects.forEach(obj => {
+        if (!intersects.find(intersect => intersect.object === obj) && obj.userData.isHovered) {
+            handleMouseExit(obj);
+        }
+    });
+
+    // Handle new intersections
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        if (!object.userData.isHovered) {
+            handleMouseEnter(object);
+        }
+    }
+}
+
+// Mouse enter handler
+function handleMouseEnter(object) {
+    object.userData.isHovered = true;
+    document.body.style.cursor = 'pointer';
+    object.dispatchEvent({ type: 'mouseover' });
+    // Different hover effects based on object type
+    switch(object.userData.type) {
+        case 'cube':
+            object.material.color.setHex(0xffff00); // Yellow
+            object.scale.multiplyScalar(1.2);
+            break;
+        case 'sphere':
+            object.material.color.setHex(0xff00ff); // Purple
+            object.scale.multiplyScalar(1.3);
+            break;
+        case 'cone':
+            object.material.color.setHex(0x00ffff); // Cyan
+            object.scale.multiplyScalar(1.1);
+            break;
+    }
+}
+
+// Mouse exit handler
+function handleMouseExit(object) {
+    object.userData.isHovered = false;
+    document.body.style.cursor = 'default';
+    object.dispatchEvent({ type: 'mouseleave' });
+    // Reset object to original state
+    object.material.color.setHex(object.userData.originalColor);
+    object.scale.copy(object.userData.originalScale);
+}
+
+function onClick(event){
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(interactiveObjects);
+
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        object.dispatchEvent({ type: 'click' });
+    }
+   
+}
 
 function init() {
     start();
@@ -26,6 +102,7 @@ function init() {
     // Interaction Manager
     allStages = [];
     // interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
+
     objectOnScreen = [];
     accessibileButtons = [];
 
@@ -44,6 +121,8 @@ function init() {
     // Handle Window Resize
     window.addEventListener('resize', onWindowResize);
 
+    window.addEventListener("mousemove",onMouseMove);
+    window.addEventListener('click', onClick);
     // Start Animation Loop
     animate();
 }
@@ -150,9 +229,17 @@ class interactedObject {
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position.x, position.y, position.z);
         shape.rotation.set(rotation.x, rotation.y, rotation.z);
+
+        shape.userData = {
+            originalColor: this.color,
+            originalScale: shape.scale.clone(),
+            isHovered: false
+        };
+
         // shape.scale.set(scale);
         // interactionManager.add(shape); // Add to Interaction Manager
         objectOnScreen.push(shape);
+        interactiveObjects.push(shape);
         return shape;
     }
 
@@ -168,20 +255,20 @@ class interactedObject {
         });
     }
 
-    selectObject(object) {
+    selectObject() {
         document.body.style.cursor = 'pointer';
-        const currctScale = object.scale;
-        object.scale.set(currctScale.x + 0.1, currctScale.y + 0.1);
+        const currctScale = this.object.scale;
+        this.object.scale.set(currctScale.x + 0.1, currctScale.y + 0.1);
 
-        object.material.color.setHex(0x00c3ff);
+        this.object.material.color.setHex(0x00c3ff);
     }
 
-    unSelectObject(object) {
+    unSelectObject() {
         document.body.style.cursor = 'default';
-        const currctScale = object.scale;
-        object.scale.set(currctScale.x - 0.1, currctScale.y - 0.1);
+        const currctScale = this.object.scale;
+        this.object.scale.set(currctScale.x - 0.1, currctScale.y - 0.1);
 
-        object.material.color.setHex(this.color);
+        this.object.material.color.setHex(this.color);
     }
 
     showOnScreen() {
@@ -198,7 +285,6 @@ class interactedObject {
         object.dispatchEvent(newEvent);
     }
 }
-
 
 class interactivePlane extends interactedObject {
     constructor({ position, rotation, scale, interactiveDescription, texture,elementColor }) {
