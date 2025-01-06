@@ -349,6 +349,12 @@ span.smallText {
     display: none;
 }
 
+#loading-screen{
+    z-index: 10000000000000;
+    position: fixed;
+    top: 0;
+}
+
 @media only screen and (max-width: 550px) {
     .popup {
         width: 75%;

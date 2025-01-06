@@ -5,10 +5,9 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.m
 
 let scene, camera, renderer, controls, interactionManager, objectOnScreen, skySphere, allStages = [], accessibileButtons = [],interactiveObjects=[];
 
+//#region mouseIneractions
 const mouse  = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
-
-
 
 // Mouse move event handler
 function onMouseMove(event) {
@@ -111,6 +110,32 @@ function handlePointerEvent(event) {
         object.dispatchEvent({ type: 'click' });
     }
 }
+//#endregion
+
+//#region preLoad
+const loadingManager = new THREE.LoadingManager();
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const loadingScreen = document.getElementById('loading-screen');
+
+loadingManager.onProgress = (url, loaded, total) => {
+    // const progress = (loaded / total * 100).toFixed();
+    // document.getElementById('progress').textContent = progress + '%';
+};
+
+let preLoadTexture = {
+    view1: textureLoader.load('./img/Musium/view1.jpg'),
+    view2: textureLoader.load('./img/Musium/view2.jpg'),
+    view3: textureLoader.load('./img/Musium/view3.jpg'),
+    view4: textureLoader.load('./img/Musium/view4.jpg'),
+    view5: textureLoader.load('./img/Musium/view5.jpg'),
+}
+
+loadingManager.onLoad = ()=>{
+    loadingScreen.style.display = 'none';
+    init();
+}
+//#endregion
+
 
 function init() {
     start();
@@ -133,7 +158,6 @@ function init() {
 
     // Interaction Manager
     allStages = [];
-    // interactionManager = new InteractionManager(renderer, camera, renderer.domElement);
 
     objectOnScreen = [];
     accessibileButtons = [];
@@ -145,8 +169,6 @@ function init() {
     skySphere = new THREE.Mesh(geometry, material);
     scene.add(skySphere);
 
-
-    // const background = new stage('./img/empty_play_room.jpg');
     preperStages();
     allStages[0].generate();
 
@@ -188,30 +210,18 @@ function start() {
 
 
 class stage {
-    constructor(textureUrl) {
-        this.textureUrl = textureUrl;
+    constructor() {
+        this.textureUrl;
+        this.texture;
         this.generateObjectsCallback = null;
-        // this.changeBackgroundTexture(textureUrl);
     }
 
     changeBackgroundTexture() {
         // Texture Loader
-        console.log(this.textureUrl);
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.load(
-            this.textureUrl, // Replace with your actual path
-            function (texture) {
-                texture.mapping = THREE.EquirectangularReflectionMapping;
-                const material = new THREE.MeshBasicMaterial({ map: texture });
-                skySphere.material = material;
-                // scene.add(skySphere);
-            },
-            undefined, // onProgress
-            function (err) {
-                console.error('An error occurred loading the texture:', err);
-            }
-        );
-
+        if(this.texture!=null){
+            const material = new THREE.MeshBasicMaterial({ map: this.texture });
+            skySphere.material = material;
+        }
     }
 
     generateObjects() {
@@ -233,7 +243,6 @@ class stage {
 
     clearCerentStange() {
         objectOnScreen.forEach(element => {
-            // interactionManager.remove(element);
             element.removeFromParent();
         });
         objectOnScreen = [];
@@ -292,8 +301,6 @@ class interactedObject {
             isHovered: false
         };
 
-        // shape.scale.set(scale);
-        // interactionManager.add(shape); // Add to Interaction Manager
         objectOnScreen.push(shape);
         interactiveObjects.push(shape);
         return shape;
@@ -394,7 +401,7 @@ class pointIntrest extends interactivePlane {
 
 function preperStages() {
     const firstStage = new stage();
-    firstStage.textureUrl = './img/Musium/view1.jpg';
+    firstStage.texture = preLoadTexture.view1;
     firstStage.generateObjects = () => {
 
         new preMadeObject().bigTv({
@@ -451,7 +458,7 @@ function preperStages() {
     allStages.push(firstStage);
 
     const secendStage = new stage();
-    secendStage.textureUrl = './img/Musium/view2.jpg';
+    secendStage.texture = preLoadTexture.view2;
     secendStage.generateObjects = () => {
         new preMadeObject().bigTv({
             position: new THREE.Vector3(-0.7, 0, -0.2),
@@ -501,20 +508,12 @@ function preperStages() {
             rotation: new THREE.Vector3(-Math.PI / 2, 0, 0),
             scale: new THREE.Vector2(1.5, 1.5),
         });
-
-        // /*view 5*/
-        // new preMadeObject().view({
-        //     viewNum:4,
-        //     position: new THREE.Vector3(-18, -3, 7),
-        //     rotation: new THREE.Vector3(-Math.PI / 2, 0, 0),
-        //     scale: new THREE.Vector2(2, 2),
-        // });
        
     };
     allStages.push(secendStage);
 
     const ThirdStage = new stage();
-    ThirdStage.textureUrl = './img/Musium/view3.jpg';
+    ThirdStage.texture = preLoadTexture.view3;
     ThirdStage.generateObjects = () => {
         new preMadeObject().bigTv({
             position: new THREE.Vector3(-0.6, 0, -0.2),
@@ -576,7 +575,7 @@ function preperStages() {
     allStages.push(ThirdStage);
 
     const FourStage = new stage();
-    FourStage.textureUrl = './img/Musium/view4.jpg';
+    FourStage.texture = preLoadTexture.view4;
     FourStage.generateObjects = () => {
         new preMadeObject().bigTv({
             position: new THREE.Vector3(1, 0, -1.2),
@@ -644,7 +643,7 @@ function preperStages() {
     allStages.push(FourStage);
 
     const FiveStage = new stage();
-    FiveStage.textureUrl = './img/Musium/view5.jpg';
+    FiveStage.texture = preLoadTexture.view5;
     FiveStage.generateObjects = () => {
 
         new preMadeObject().mounkyDot({
@@ -673,22 +672,6 @@ function preperStages() {
         });
 
 
-        
-        // /*view 1*/
-        // new preMadeObject().view({
-        //     viewNum:0,
-        //     position: new THREE.Vector3(15.5, -3, -11),
-        //     rotation: new THREE.Vector3(-Math.PI / 2, 0, 0),
-        //     scale: new THREE.Vector2(1.5, 1.5),
-        // });
-
-        // /*view 2*/
-        // new preMadeObject().view({
-        //     viewNum:1,
-        //     position: new THREE.Vector3(17, -2.1, -7.8),
-        //     rotation: new THREE.Vector3(-Math.PI / 2, 0, 0),
-        //     scale: new THREE.Vector2(1.6, 1.6),
-        // });
 
         /*view 3*/
         new preMadeObject().view({
@@ -709,39 +692,6 @@ function preperStages() {
     };
     allStages.push(FiveStage);
 
-    // const secendStage = new stage();
-    // secendStage.textureUrl = './img/MusiumView02.jpg';
-    // secendStage.generateObjects = () => {
-
-        
-    //     new preMadeObject().view({
-    //         viewNum:0,
-    //         position: new THREE.Vector3(9, -2, -6),
-    //         rotation: new THREE.Vector3(-Math.PI / 2, 0, 0),
-    //         scale: new THREE.Vector2(2.5, 2.5),
-    //     });
-
-    //     new preMadeObject().baloon({
-    //         position: new THREE.Vector3(2, 0.3, 1),
-    //         rotation: new THREE.Vector3(0, -Math.PI / 2, 0),
-    //         scale: new THREE.Vector2(0.4, 0.4)
-    //     });
-
-    //     new preMadeObject().keithHaring({
-    //         position: new THREE.Vector3(-0.5, 0.4, -1),
-    //         rotation: new THREE.Vector3(0, 0, -Math.PI / 2),
-    //         scale: new THREE.Vector2(0.8, 0.8),
-    //     });
-
-    //     new preMadeObject().glass({
-    //         position: new THREE.Vector3(0, 0, -0.2),
-    //         rotation: new THREE.Vector3(0, 0, -Math.PI / 2),
-    //         scale: new THREE.Vector2(0.3, 0.3)
-    //     });
-
-
-    // };
-    // allStages.push(secendStage);
 }
 
 class preMadeObject{
@@ -888,16 +838,11 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Update Controls and Interaction Manager
-    // interactionManager.update();
-
     renderer.render(scene, camera);
 }
 
 
-init();
-
-//#region  camera popic 1
+//#region  Camera Control
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
 let lastTouchPosition = null;
@@ -988,163 +933,6 @@ function lookAt(targetObject) {
 
 }
 //#endregion
-// //#region Camera Control
-
-// let isDragging = false;
-// let previousMousePosition = { x: 0, y: 0 };
-// let lastTouchPosition = null;
-// let viewportDimensions = {
-//     width: window.innerWidth,
-//     height: window.innerHeight
-// };
-
-// // Update viewport dimensions when window resizes
-// window.addEventListener('resize', () => {
-//     viewportDimensions = {
-//         width: window.innerWidth,
-//         height: window.innerHeight
-//     };
-// });
-
-// document.addEventListener('mousedown', () => {
-//     isDragging = true;
-// });
-
-// document.addEventListener('mouseup', () => {
-//     isDragging = false;
-// });
-
-
-
-// document.addEventListener('mousemove', (event) => {
-//     if (!isDragging) return;
-
-//     const deltaMove = {
-//         x: event.movementX,
-//         y: event.movementY,
-//     };
-
-//     pointerLookAround(deltaMove);
-// });
-
-// document.addEventListener('touchstart', (event) => {
-//     if (event.touches.length > 0) {
-//         const touch = event.touches[0];
-//         lastTouchPosition = { x: touch.clientX, y: touch.clientY };
-//         isDragging = true;
-//     }
-// });
-
-// // document.addEventListener('touchmove', (event) => {
-// //     if (!isDragging || event.touches.length === 0) return;
-
-// //     const touch = event.touches[0];
-// //     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
-
-// //     // Calculate delta movement
-// //     const deltaMove = {
-// //         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
-// //         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
-// //     };
-
-// //     lastTouchPosition = currentTouchPosition;
-
-// //     pointerLookAround(deltaMove);
-// // });
-
-// document.addEventListener('touchmove', (event) => {
-//     if (!isDragging || event.touches.length === 0) return;
-    
-//     const touch = event.touches[0];
-//     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
-    
-//     // Calculate delta movement
-//     const deltaMove = {
-//         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
-//         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
-//     };
-    
-//     // Scale the movement based on viewport dimensions
-//     const aspectRatio = viewportDimensions.width / viewportDimensions.height;
-//     if (aspectRatio < 1) { // Portrait mode
-//         // Adjust the movement scale based on aspect ratio
-//         deltaMove.x *= aspectRatio;
-//         deltaMove.y *= aspectRatio;
-//     }
-    
-//     lastTouchPosition = currentTouchPosition;
-    
-//     pointerLookAround(deltaMove);
-// });
-
-
-// document.addEventListener('touchend', () => {
-//     isDragging = false;
-//     lastTouchPosition = null;
-// });
-
-// // function pointerLookAround(deltaMove) {
-// //     const rotationSpeed = 0.002; // Adjust sensitivity
-// //     const quaternionX = new THREE.Quaternion();
-// //     const quaternionY = new THREE.Quaternion();
-
-// //     quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
-// //     quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
-
-// //     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
-// //     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
-// // }
-
-// function pointerLookAround(deltaMove) {
-//     // Base rotation speed
-//     const baseSpeed = 0.002;
-    
-//     // Adjust rotation speed based on viewport size
-//     const viewportScale = Math.min(
-//         viewportDimensions.width / 1920, // Reference width
-//         viewportDimensions.height / 1080  // Reference height
-//     );
-//     const rotationSpeed = baseSpeed * (viewportScale * 1.5); // Adjust multiplier as needed
-    
-//     const quaternionX = new THREE.Quaternion();
-//     const quaternionY = new THREE.Quaternion();
-    
-//     quaternionY.setFromAxisAngle(
-//         new THREE.Vector3(0, 1, 0),
-//         deltaMove.x * rotationSpeed
-//     );
-//     quaternionX.setFromAxisAngle(
-//         new THREE.Vector3(1, 0, 0),
-//         deltaMove.y * rotationSpeed
-//     );
-    
-//     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
-//     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
-// }
-
-
-
-// function lookAt(targetObject) {
-//     // Calculate the target's world position
-//     const targetPosition = new THREE.Vector3();
-//     targetObject.getWorldPosition(targetPosition);
-
-//     // Calculate the direction vector from the camera to the target position
-//     const direction = new THREE.Vector3();
-//     direction.subVectors(targetPosition, camera.position).normalize();
-
-//     // Create a quaternion to represent the camera's new orientation
-//     const targetQuaternion = new THREE.Quaternion();
-//     targetQuaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction);
-
-//     // Set the camera's quaternion to the target quaternion
-//     camera.quaternion.copy(targetQuaternion);
-
-//     // Ensure the camera's "up" vector remains consistent
-//     camera.lookAt(targetPosition);
-
-// }
-// //#endregion
 
 //general html shit
 function displayIframePopup({ iframeUrl, artistName, famousFor }) {
