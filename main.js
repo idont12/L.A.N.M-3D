@@ -82,7 +82,7 @@ function onClick(event){
 // Handle both mouse and touch events
 function handlePointerEvent(event) {
     // Prevent default behavior (like scrolling)
-    event.preventDefault();
+    // event.preventDefault();
     
     let clientX, clientY;
     
