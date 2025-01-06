@@ -897,9 +897,7 @@ function animate() {
 
 init();
 
-
-//#region Camera Control
-
+//#region  camera popic 1
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
 let lastTouchPosition = null;
@@ -907,7 +905,6 @@ let viewportDimensions = {
     width: window.innerWidth,
     height: window.innerHeight
 };
-
 // Update viewport dimensions when window resizes
 window.addEventListener('resize', () => {
     viewportDimensions = {
@@ -923,8 +920,6 @@ document.addEventListener('mousedown', () => {
 document.addEventListener('mouseup', () => {
     isDragging = false;
 });
-
-
 
 document.addEventListener('mousemove', (event) => {
     if (!isDragging) return;
@@ -944,95 +939,33 @@ document.addEventListener('touchstart', (event) => {
         isDragging = true;
     }
 });
-
-// document.addEventListener('touchmove', (event) => {
-//     if (!isDragging || event.touches.length === 0) return;
-
-//     const touch = event.touches[0];
-//     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
-
-//     // Calculate delta movement
-//     const deltaMove = {
-//         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
-//         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
-//     };
-
-//     lastTouchPosition = currentTouchPosition;
-
-//     pointerLookAround(deltaMove);
-// });
-
 document.addEventListener('touchmove', (event) => {
     if (!isDragging || event.touches.length === 0) return;
-    
     const touch = event.touches[0];
     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
-    
     // Calculate delta movement
     const deltaMove = {
         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
     };
-    
-    // Scale the movement based on viewport dimensions
-    const aspectRatio = viewportDimensions.width / viewportDimensions.height;
-    if (aspectRatio < 1) { // Portrait mode
-        // Adjust the movement scale based on aspect ratio
-        deltaMove.x *= aspectRatio;
-        deltaMove.y *= aspectRatio;
-    }
-    
     lastTouchPosition = currentTouchPosition;
-    
     pointerLookAround(deltaMove);
 });
-
 
 document.addEventListener('touchend', () => {
     isDragging = false;
     lastTouchPosition = null;
 });
 
-// function pointerLookAround(deltaMove) {
-//     const rotationSpeed = 0.002; // Adjust sensitivity
-//     const quaternionX = new THREE.Quaternion();
-//     const quaternionY = new THREE.Quaternion();
-
-//     quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
-//     quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
-
-//     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
-//     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
-// }
-
 function pointerLookAround(deltaMove) {
-    // Base rotation speed
-    const baseSpeed = 0.002;
-    
-    // Adjust rotation speed based on viewport size
-    const viewportScale = Math.min(
-        viewportDimensions.width / 1920, // Reference width
-        viewportDimensions.height / 1080  // Reference height
-    );
-    const rotationSpeed = baseSpeed * (viewportScale * 1.5); // Adjust multiplier as needed
-    
+    const rotationSpeed = 0.002; // Adjust sensitivity
     const quaternionX = new THREE.Quaternion();
     const quaternionY = new THREE.Quaternion();
-    
-    quaternionY.setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        deltaMove.x * rotationSpeed
-    );
-    quaternionX.setFromAxisAngle(
-        new THREE.Vector3(1, 0, 0),
-        deltaMove.y * rotationSpeed
-    );
-    
+    quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
+    quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
 }
-
-
 
 function lookAt(targetObject) {
     // Calculate the target's world position
@@ -1055,6 +988,163 @@ function lookAt(targetObject) {
 
 }
 //#endregion
+// //#region Camera Control
+
+// let isDragging = false;
+// let previousMousePosition = { x: 0, y: 0 };
+// let lastTouchPosition = null;
+// let viewportDimensions = {
+//     width: window.innerWidth,
+//     height: window.innerHeight
+// };
+
+// // Update viewport dimensions when window resizes
+// window.addEventListener('resize', () => {
+//     viewportDimensions = {
+//         width: window.innerWidth,
+//         height: window.innerHeight
+//     };
+// });
+
+// document.addEventListener('mousedown', () => {
+//     isDragging = true;
+// });
+
+// document.addEventListener('mouseup', () => {
+//     isDragging = false;
+// });
+
+
+
+// document.addEventListener('mousemove', (event) => {
+//     if (!isDragging) return;
+
+//     const deltaMove = {
+//         x: event.movementX,
+//         y: event.movementY,
+//     };
+
+//     pointerLookAround(deltaMove);
+// });
+
+// document.addEventListener('touchstart', (event) => {
+//     if (event.touches.length > 0) {
+//         const touch = event.touches[0];
+//         lastTouchPosition = { x: touch.clientX, y: touch.clientY };
+//         isDragging = true;
+//     }
+// });
+
+// // document.addEventListener('touchmove', (event) => {
+// //     if (!isDragging || event.touches.length === 0) return;
+
+// //     const touch = event.touches[0];
+// //     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
+
+// //     // Calculate delta movement
+// //     const deltaMove = {
+// //         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
+// //         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
+// //     };
+
+// //     lastTouchPosition = currentTouchPosition;
+
+// //     pointerLookAround(deltaMove);
+// // });
+
+// document.addEventListener('touchmove', (event) => {
+//     if (!isDragging || event.touches.length === 0) return;
+    
+//     const touch = event.touches[0];
+//     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
+    
+//     // Calculate delta movement
+//     const deltaMove = {
+//         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
+//         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
+//     };
+    
+//     // Scale the movement based on viewport dimensions
+//     const aspectRatio = viewportDimensions.width / viewportDimensions.height;
+//     if (aspectRatio < 1) { // Portrait mode
+//         // Adjust the movement scale based on aspect ratio
+//         deltaMove.x *= aspectRatio;
+//         deltaMove.y *= aspectRatio;
+//     }
+    
+//     lastTouchPosition = currentTouchPosition;
+    
+//     pointerLookAround(deltaMove);
+// });
+
+
+// document.addEventListener('touchend', () => {
+//     isDragging = false;
+//     lastTouchPosition = null;
+// });
+
+// // function pointerLookAround(deltaMove) {
+// //     const rotationSpeed = 0.002; // Adjust sensitivity
+// //     const quaternionX = new THREE.Quaternion();
+// //     const quaternionY = new THREE.Quaternion();
+
+// //     quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
+// //     quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
+
+// //     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
+// //     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
+// // }
+
+// function pointerLookAround(deltaMove) {
+//     // Base rotation speed
+//     const baseSpeed = 0.002;
+    
+//     // Adjust rotation speed based on viewport size
+//     const viewportScale = Math.min(
+//         viewportDimensions.width / 1920, // Reference width
+//         viewportDimensions.height / 1080  // Reference height
+//     );
+//     const rotationSpeed = baseSpeed * (viewportScale * 1.5); // Adjust multiplier as needed
+    
+//     const quaternionX = new THREE.Quaternion();
+//     const quaternionY = new THREE.Quaternion();
+    
+//     quaternionY.setFromAxisAngle(
+//         new THREE.Vector3(0, 1, 0),
+//         deltaMove.x * rotationSpeed
+//     );
+//     quaternionX.setFromAxisAngle(
+//         new THREE.Vector3(1, 0, 0),
+//         deltaMove.y * rotationSpeed
+//     );
+    
+//     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
+//     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
+// }
+
+
+
+// function lookAt(targetObject) {
+//     // Calculate the target's world position
+//     const targetPosition = new THREE.Vector3();
+//     targetObject.getWorldPosition(targetPosition);
+
+//     // Calculate the direction vector from the camera to the target position
+//     const direction = new THREE.Vector3();
+//     direction.subVectors(targetPosition, camera.position).normalize();
+
+//     // Create a quaternion to represent the camera's new orientation
+//     const targetQuaternion = new THREE.Quaternion();
+//     targetQuaternion.setFromUnitVectors(new THREE.Vector3(0, 0, -1), direction);
+
+//     // Set the camera's quaternion to the target quaternion
+//     camera.quaternion.copy(targetQuaternion);
+
+//     // Ensure the camera's "up" vector remains consistent
+//     camera.lookAt(targetPosition);
+
+// }
+// //#endregion
 
 //general html shit
 function displayIframePopup({ iframeUrl, artistName, famousFor }) {
