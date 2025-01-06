@@ -80,19 +80,36 @@ function onClick(event){
    
 }
 
-function onTouch(event){
-    const touch = event.touches[0];
-    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-
+// Handle both mouse and touch events
+function handlePointerEvent(event) {
+    // Prevent default behavior (like scrolling)
+    event.preventDefault();
+    
+    let clientX, clientY;
+    
+    // Check if it's a touch event
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+    }
+    
+    // Convert click coordinates to normalized device coordinates (-1 to +1)
+    mouse.x = (clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+    
+    // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
+    
+    // Calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(interactiveObjects);
-
+    
     if (intersects.length > 0) {
         const object = intersects[0].object;
         object.dispatchEvent({ type: 'click' });
     }
-   
 }
 
 function init() {
@@ -137,14 +154,31 @@ function init() {
     window.addEventListener('resize', onWindowResize);
 
     window.addEventListener("mousemove",onMouseMove);
-    window.addEventListener('click', onClick);
-    window.addEventListener('touchstart', onTouch);
+    window.addEventListener('click', handlePointerEvent);
     // Start Animation Loop
     animate();
 }
 
 function start() {
     document.getElementById("startButton").addEventListener("click", start3DWorld);
+
+    //full screen
+document.getElementById("fullscreenBut").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      // Request full screen
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+      document.body.classList.add("fullScreen");
+    } else {
+      // Exit full screen
+      document.exitFullscreen().catch(err => {
+        console.error(`Error attempting to exit full-screen mode: ${err.message}`);
+        document.body.classList.remove("fullScreen");
+      });
+    }
+  });
+  
 }
 
 class stage {
@@ -1146,3 +1180,4 @@ function start3DWorld() {
 
     document.getElementById("MuseumCanvas").style.display = "block";
 }
+
