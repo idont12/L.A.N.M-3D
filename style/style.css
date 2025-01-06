@@ -50,6 +50,7 @@ button:hover svg,
     pointer-events: none;
     position: absolute;
     top: 0;
+    visibility: hidden;
 }
 
 /*Containers*/
@@ -74,13 +75,13 @@ button:hover svg,
     z-index: 1000;
     border-radius: 1000px;
     padding: 8px;
-    border: none;
-    display: flex
-;
+    border: var(--mainColor) solid 2px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    outline: var(--mainColor) solid 2px;
     box-shadow: none;
+
+    transition: all 200ms;
 }
 
 /*popup*/
@@ -258,7 +259,9 @@ button:hover svg,
 #sideBanner a:hover,
 #sideBanner button:hover,
 #sideBanner a:focus-visible,
-#sideBanner button:focus-visible {
+#sideBanner button:focus-visible,
+#fullscreenBut:hover,
+#fullscreenBut:focus-visible {
     transform: scale(1.1);
     background-color: var(--lightColorDarker);
 }
@@ -296,8 +299,6 @@ span.smallText {
 }
 
 .artistInfo>div {
-    /* background-color: var(--backColorDarker); */
-    /* border-radius: 5px; */
     padding: 5px 10px;
     flex-grow: 1;
 }
@@ -354,6 +355,9 @@ span.smallText {
     position: fixed;
     top: 0;
 }
+
+
+
 
 @media only screen and (max-width: 550px) {
     .popup {

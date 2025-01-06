@@ -17,6 +17,7 @@
 
     <div id="loading-screen" class="loaderBody screen">
         <span class="loader"></span>
+        <span class="text"></span>
     </div>
 
     <button id="fullscreenBut" aria-label="FullScreen" title="FullScreen"><img src="./img/Other/fullScreen.svg" alt="" height="20px" width="20px"/></button>
@@ -50,7 +51,7 @@
     </div>
 
     <div id="iframePopup" class="popup">
-        <button class="closeBut" onclick="hideAllPopups()">X</button>
+        <button class="closeBut" aria-label="close" onclick="hideAllPopups()">X</button>
         <div class="ratio-9_16">
             <!-- <iframe src="./loadingIframePage.html" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
             <iframe src="./loadingIframePage.html" frameborder="0"

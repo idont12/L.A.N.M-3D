@@ -118,10 +118,48 @@ const textureLoader = new THREE.TextureLoader(loadingManager);
 const loadingScreen = document.getElementById('loading-screen');
 
 loadingManager.onProgress = (url, loaded, total) => {
-    // const progress = (loaded / total * 100).toFixed();
-    // document.getElementById('progress').textContent = progress + '%';
 };
 
+/*Update fake loading*/
+function loadingTextUpdate(place){
+    console.log(place);
+    const textAndTimeMessage=
+    [
+        { time: 3000, text: "Loading..." },
+        { time: 8500, text: "Downloading textures..." },
+        { time: 3000, text: "Loading HD textures..." },
+        { time: 7000, text: "Making things look awesome, hang tight!" },
+        { time: 3200, text: "We’re working on the details..." },
+        { time: 5700, text: "Your textures are on their way!" },
+        { time: 4500, text: "Make sure you have good internet!" },
+        { time: 3900, text: "Getting everything picture-perfect..." },
+        { time: 3600, text: "Textures incoming, almost there!" },
+        { time: 3000, text: "We’re really close now..." },
+        { time: 4200, text: "Bringing your screen to life..." },
+        { time: 6500, text: "Hold on, we’re almost done!" },
+        { time: 3400, text: "Making it look great for you..." },
+        { time: 10100, text: "Almost ready, just a moment..." },
+        { time: 4800, text: "Final touches are happening now..." },
+        { time: 3900, text: "Make sure you have good internet" },
+        { time: 3700, text: "Your visuals are on their way..." },
+        { time: 7600, text: "We’re putting it all together..." },
+        { time: 10100, text: "Make sure you have good internet!" }
+      ]
+
+    if(loadingScreen.style.display=="none"){
+        return;
+    }
+
+    if(place>textAndTimeMessage.length){
+        place = 0;
+    }
+    console.log(textAndTimeMessage[place].text);
+    loadingScreen.getElementsByClassName("text")[0].innerText=textAndTimeMessage[place].text;
+    place++;
+    console.log(place);
+    setTimeout(loadingTextUpdate, textAndTimeMessage[place].time,place);
+}
+loadingTextUpdate(0);
 let preLoadTexture = {
     view1: textureLoader.load('./img/Musium/view1.jpg'),
     view2: textureLoader.load('./img/Musium/view2.jpg'),
@@ -136,7 +174,7 @@ loadingManager.onLoad = ()=>{
 }
 //#endregion
 
-
+//Three js start + call to 'start()'
 function init() {
     start();
 
@@ -181,8 +219,12 @@ function init() {
     animate();
 }
 
+//html start
 function start() {
+    //start button
     document.getElementById("startButton").addEventListener("click", start3DWorld);
+
+    //full screen
     document.getElementById("fullscreenBut").addEventListener("click", () => {
     if (!document.fullscreenElement) {
       // Request full screen
@@ -200,7 +242,7 @@ function start() {
         console.error(`Error attempting to exit full-screen mode: ${err.message}`);
       });
       document.body.classList.remove("fullScreen");
-      document.getElementById("fullscreenBut").getElementsByTagName("img")[0].src="./img/Other/fullscreen.svg";
+      document.getElementById("fullscreenBut").getElementsByTagName("img")[0].src="./img/Other/fullScreen.svg";
       document.getElementById("fullscreenBut").setAttribute("aria-label","FullScreen");
       document.getElementById("fullscreenBut").title="Fullscreen";
     }
@@ -208,7 +250,7 @@ function start() {
 
 }
 
-
+/*class to store the stage info*/
 class stage {
     constructor() {
         this.textureUrl;
@@ -254,6 +296,7 @@ class stage {
     }
 }
 
+/*class to store and manage the interactive objects*/
 class interactedObject {
     constructor({ geometry, material, position, rotation, scale, interactiveDescription,elementColor = 0xffffff}) {
         this.color = elementColor;
@@ -399,6 +442,7 @@ class pointIntrest extends interactivePlane {
     }
 }
 
+/*preCreate all stages*/
 function preperStages() {
     const firstStage = new stage();
     firstStage.texture = preLoadTexture.view1;
@@ -694,6 +738,7 @@ function preperStages() {
 
 }
 
+/*class to manage the creation of all objects*/
 class preMadeObject{
     /*Objects*/
     bigTv({position,rotation,scale}){
@@ -829,12 +874,14 @@ class preMadeObject{
     }
 }
 
+/*change rander on change window size*/
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+/*animation*/
 function animate() {
     requestAnimationFrame(animate);
 
@@ -1050,8 +1097,14 @@ function hideAllPopups() {
             popup.classList.remove("show");
         }
     });
+
+    const banner = document.getElementById("sideBanner");
+    if (sideBanner.classList.contains("show")) {
+        sideBanner.classList.remove("show");
+    }    
 }
 
+//hide start screen and show 3D world
 function start3DWorld() {
 
     document.getElementById("MainPage").style.display = "none";
@@ -1061,7 +1114,7 @@ function start3DWorld() {
             iframeUrl: "https://www.youtube.com/embed/-Vf1WvB17k8?si=zcc_otakgZcJhBW2&amp;autoplay=1&amp;mute=0",
         }
     );
-
+    document.getElementById("accessibileButtonsCon").style.visibility = "visible";
     document.getElementById("MuseumCanvas").style.display = "block";
 }
 
