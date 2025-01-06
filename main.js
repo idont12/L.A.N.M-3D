@@ -578,9 +578,9 @@ function preperStages() {
         });
 
         new preMadeObject().glass({
-            position: new THREE.Vector3(-4, -0.4,1.2),
+            position: new THREE.Vector3(-4, -0.2,1.2),
             rotation: new THREE.Vector3(0, -Math.PI / 2, 0),
-            scale: new THREE.Vector2(0.6, 0.6),
+            scale: new THREE.Vector2(0.5, 0.5),
         });
 
 
