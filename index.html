@@ -4,7 +4,8 @@
 <head>
     <title>L.A.N.M - Official Website</title>
     <link rel="stylesheet" type="text/css" href="./style/style.css" />
-    <link rel="icon" type="image/x-icon" href="./img/Other/Logo.png">
+    <link rel="icon" type="image/x-icon" href="./img/Other/Logo.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 </head>
 
 <body>
@@ -12,7 +13,7 @@
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js';
       </script>
     <script type="module" src="./main.js"></script>
-    <button id="fullscreenBut">full screen mod</button>
+    <button id="fullscreenBut" aria-label="FullScreen" title="FullScreen"><img src="./img/Other/fullScreen.svg" alt="" height="20px" width="20px"/></button>
     <div class="screen" id="MainPage">
         <h1><span>Welcome to</span>L.A.N.M</h1>
         <p>The place where money and lame artist like you can finally meet</p>
@@ -35,6 +36,11 @@
                 </g>
             </svg> -->
         </button>
+    </div>
+
+    <div class="screen" id="horizonalProblem">
+        <h1>Can you flip the screen maybe?</h1>
+        <p>This web work only on horizonal screens</p>
     </div>
 
     <div id="iframePopup" class="popup">
@@ -69,7 +75,7 @@
             <img class="bigPic" src="./img/ArtWork/Yayoi Kusama - Dots Obsession .jpg"
                 alt="Dots Obsession by Yayoi Kusama" title="Dots Obsession by Yayoi Kusama">
         </div>
-
+        <div class="subGroup">
         <!-- art work info -->
         <div class="titleSection">
             <div>
@@ -151,7 +157,7 @@
                 </svg>
             </button>
         </div>
-
+    </div>
         <button class="close">
             <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-10 -10 120.00 120.00"

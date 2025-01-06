@@ -72,6 +72,15 @@ button:hover svg,
     top: 1em;
     left: 1em;
     z-index: 1000;
+    border-radius: 1000px;
+    padding: 8px;
+    border: none;
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    outline: var(--mainColor) solid 2px;
+    box-shadow: none;
 }
 
 /*popup*/
@@ -140,10 +149,6 @@ button:hover svg,
     height: 100vh;
     height: 100dvh;
     width: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 15px;
     border-right: var(--lightColor) solid 4px;
 
     color: var(--lightColor);
@@ -159,6 +164,14 @@ button:hover svg,
 #sideBanner.show{
     left: 0px;
     visibility: visible;
+}
+
+#sideBanner .subGroup, #sideBanner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
 }
 
 #sideBanner .close {
@@ -308,8 +321,7 @@ span.smallText {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
-    padding: var(--horizonalPadding);
+    width: 100vw;
 }
 
 .screen h1 {
@@ -333,6 +345,9 @@ span.smallText {
     padding: 8px 15px;
 }
 
+#horizonalProblem{
+    display: none;
+}
 
 @media only screen and (max-width: 550px) {
     .popup {
@@ -356,15 +371,17 @@ span.smallText {
     }
 }
 
+@media only screen and (max-height: 400px){
+    #sideBanner{
+        width: min(500px,100%);
+        flex-direction: row;
+    }
+}
+
 @media (orientation: portrait){
-    *{
+    /* *{
         font-size:1.2em;
     }
-
-    body.fullScreen *{
-        font-size: 1.3rem;
-    }
-
     .popup{
         max-width: 100%;
         width: 85%;
@@ -381,5 +398,24 @@ span.smallText {
     height: 1.9em;
     width: 1.9em;
     }
+
+
+    body.fullScreen *{
+        font-size: 1.3rem;
+    }
+
+    body.fullScreen h1 {
+        font-size: 3em;
+}
+
+body.fullScreen button.closeBut {
+    font-size: 0.6em;
+} */
+#horizonalProblem{
+    display: flex;
+    z-index: 10000000000000;
+    position: fixed;
+    top: 0;
+}
 
 }

@@ -161,25 +161,31 @@ function init() {
 
 function start() {
     document.getElementById("startButton").addEventListener("click", start3DWorld);
-
-    //full screen
-document.getElementById("fullscreenBut").addEventListener("click", () => {
+    document.getElementById("fullscreenBut").addEventListener("click", () => {
     if (!document.fullscreenElement) {
       // Request full screen
       document.documentElement.requestFullscreen().catch(err => {
         console.error(`Error attempting to enable full-screen mode: ${err.message}`);
       });
       document.body.classList.add("fullScreen");
-    } else {
+      document.getElementById("fullscreenBut").getElementsByTagName("img")[0].src="./img/Other/shrinkScreen.svg";
+      document.getElementById("fullscreenBut").title="Shrink Screen";
+      document.getElementById("fullscreenBut").setAttribute("aria-label","Shrink Screen");
+    }
+    else {
       // Exit full screen
       document.exitFullscreen().catch(err => {
         console.error(`Error attempting to exit full-screen mode: ${err.message}`);
-        document.body.classList.remove("fullScreen");
       });
+      document.body.classList.remove("fullScreen");
+      document.getElementById("fullscreenBut").getElementsByTagName("img")[0].src="./img/Other/fullscreen.svg";
+      document.getElementById("fullscreenBut").setAttribute("aria-label","FullScreen");
+      document.getElementById("fullscreenBut").title="Fullscreen";
     }
   });
-  
+
 }
+
 
 class stage {
     constructor(textureUrl) {
