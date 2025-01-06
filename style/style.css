@@ -251,7 +251,7 @@ img.bigPic {
 }
 
 #sideBanner img.smallPic {
-    width: 80px;
+    width: 3.5em;
     position: absolute;
     left: 0;
     top: 0;
@@ -259,7 +259,7 @@ img.bigPic {
 }
 
 #sideBanner img.bigPic {
-    width: 190px;
+    width: 9em;
 }
 
 span.smallText {
@@ -344,7 +344,31 @@ span.smallText {
     }
 
     .popup{
-        max-width: auto;
-        width: 90%;
+        max-width: 100%;
+        width: 85%;
     }
+}
+
+@media (orientation: portrait){
+    *{
+        font-size:1.2em;
+    }
+
+    .popup{
+        max-width: 100%;
+        width: 85%;
+    }
+
+    #sideBanner{
+        width: 100%;
+        font-size: 1.9em;
+    }
+    #sideBanner .close{
+        left: auto;
+    right: 1.1em;
+    transform: translate(0px, 0px);
+    height: 1.9em;
+    width: 1.9em;
+    }
+
 }

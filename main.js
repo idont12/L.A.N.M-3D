@@ -846,6 +846,19 @@ init();
 
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
+let lastTouchPosition = null;
+let viewportDimensions = {
+    width: window.innerWidth,
+    height: window.innerHeight
+};
+
+// Update viewport dimensions when window resizes
+window.addEventListener('resize', () => {
+    viewportDimensions = {
+        width: window.innerWidth,
+        height: window.innerHeight
+    };
+});
 
 document.addEventListener('mousedown', () => {
     isDragging = true;
@@ -855,7 +868,7 @@ document.addEventListener('mouseup', () => {
     isDragging = false;
 });
 
-let lastTouchPosition = null;
+
 
 document.addEventListener('mousemove', (event) => {
     if (!isDragging) return;
@@ -876,36 +889,89 @@ document.addEventListener('touchstart', (event) => {
     }
 });
 
+// document.addEventListener('touchmove', (event) => {
+//     if (!isDragging || event.touches.length === 0) return;
+
+//     const touch = event.touches[0];
+//     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
+
+//     // Calculate delta movement
+//     const deltaMove = {
+//         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
+//         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
+//     };
+
+//     lastTouchPosition = currentTouchPosition;
+
+//     pointerLookAround(deltaMove);
+// });
+
 document.addEventListener('touchmove', (event) => {
     if (!isDragging || event.touches.length === 0) return;
-
+    
     const touch = event.touches[0];
     const currentTouchPosition = { x: touch.clientX, y: touch.clientY };
-
+    
     // Calculate delta movement
     const deltaMove = {
         x: currentTouchPosition.x - (lastTouchPosition?.x || currentTouchPosition.x),
         y: currentTouchPosition.y - (lastTouchPosition?.y || currentTouchPosition.y),
     };
-
+    
+    // Scale the movement based on viewport dimensions
+    const aspectRatio = viewportDimensions.width / viewportDimensions.height;
+    if (aspectRatio < 1) { // Portrait mode
+        // Adjust the movement scale based on aspect ratio
+        deltaMove.x *= aspectRatio;
+        deltaMove.y *= aspectRatio;
+    }
+    
     lastTouchPosition = currentTouchPosition;
-
+    
     pointerLookAround(deltaMove);
 });
+
 
 document.addEventListener('touchend', () => {
     isDragging = false;
     lastTouchPosition = null;
 });
 
+// function pointerLookAround(deltaMove) {
+//     const rotationSpeed = 0.002; // Adjust sensitivity
+//     const quaternionX = new THREE.Quaternion();
+//     const quaternionY = new THREE.Quaternion();
+
+//     quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
+//     quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
+
+//     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
+//     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
+// }
+
 function pointerLookAround(deltaMove) {
-    const rotationSpeed = 0.002; // Adjust sensitivity
+    // Base rotation speed
+    const baseSpeed = 0.002;
+    
+    // Adjust rotation speed based on viewport size
+    const viewportScale = Math.min(
+        viewportDimensions.width / 1920, // Reference width
+        viewportDimensions.height / 1080  // Reference height
+    );
+    const rotationSpeed = baseSpeed * (viewportScale * 1.5); // Adjust multiplier as needed
+    
     const quaternionX = new THREE.Quaternion();
     const quaternionY = new THREE.Quaternion();
-
-    quaternionY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), deltaMove.x * rotationSpeed); // Horizontal rotation
-    quaternionX.setFromAxisAngle(new THREE.Vector3(1, 0, 0), deltaMove.y * rotationSpeed); // Vertical rotation
-
+    
+    quaternionY.setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        deltaMove.x * rotationSpeed
+    );
+    quaternionX.setFromAxisAngle(
+        new THREE.Vector3(1, 0, 0),
+        deltaMove.y * rotationSpeed
+    );
+    
     camera.quaternion.multiplyQuaternions(quaternionY, camera.quaternion);
     camera.quaternion.multiplyQuaternions(camera.quaternion, quaternionX);
 }
