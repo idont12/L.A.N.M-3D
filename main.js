@@ -80,6 +80,21 @@ function onClick(event){
    
 }
 
+function onTouch(event){
+    const touch = event.touches[0];
+    mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(interactiveObjects);
+
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        object.dispatchEvent({ type: 'click' });
+    }
+   
+}
+
 function init() {
     start();
 
@@ -123,6 +138,7 @@ function init() {
 
     window.addEventListener("mousemove",onMouseMove);
     window.addEventListener('click', onClick);
+    window.addEventListener('touchstart', onTouch);
     // Start Animation Loop
     animate();
 }
